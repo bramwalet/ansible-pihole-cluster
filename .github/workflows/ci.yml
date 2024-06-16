@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v4
+        with: 
+          path: ansible-pihole-cluster 
   
       - name: Set up Python 3.
         uses: actions/setup-python@v5
@@ -33,4 +35,4 @@ jobs:
 
       - name: Lint code.
         run: |
-          ansible-lint .
+          ansible-lint ansible-pihole-cluster/.
