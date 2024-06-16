@@ -13,6 +13,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: 'ansible-pihole-cluster'
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
@@ -22,8 +26,8 @@ jobs:
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v4
-        with: 
-          path: ansible-pihole-cluster 
+        # with: 
+        #   path: ansible-pihole-cluster 
   
       - name: Set up Python 3.
         uses: actions/setup-python@v5
@@ -31,8 +35,11 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies.
-        run: pip3 install ansible-lint
+        run: pip3 install ansible
+
+      - name: Install test dependencies.
+        run: ansible-galaxy role install -r roles/requirements.yml
 
       - name: Lint code.
         run: |
-          ansible-lint ansible-pihole-cluster/.
+          ansible-lint .
