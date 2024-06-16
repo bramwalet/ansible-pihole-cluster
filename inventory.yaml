@@ -1,5 +1,5 @@
 dnsservers:
-  hosts: 
+  hosts:
     pihole-master:
       ansible_host: 192.168.16.2
       priority: 101

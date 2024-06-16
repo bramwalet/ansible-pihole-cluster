@@ -9,4 +9,6 @@
     - sshd
     - geerlingguy.docker
     - pihole
+    - role: orbital_sync
+      when: slave | bool
     - start_keepalived

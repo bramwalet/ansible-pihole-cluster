@@ -1,6 +1,6 @@
 - name: Add ssh key
   ansible.posix.authorized_key:
-    key: https://github.com/{{ github_user_for_ssh_key }}.keys
+    key: "https://github.com/{{ github_user_for_ssh_key }}.keys"
     user: "{{ ansible_user }}"
     comment: "github-{{ github_user_for_ssh_key }}"
 
@@ -33,23 +33,15 @@
       fi
 
 - name: Set timezone
-  ansible.builtin.lineinfile:
-    path: /etc/timezone
-    regexp: "^"
-    line: "{{ timezone }}"
+  community.general.timezone:
+    name: "{{ timezone }}"
 
-- name: Set localtime
-  ansible.builtin.file:
-    src: /usr/share/zoneinfo/{{ timezone }}
-    dest: /etc/localtime
-    state: link
 
 - name: Set hostname
-  ansible.builtin.lineinfile:
-    path: /etc/hostname
-    regexp: "^"
-    line: "{{ inventory_hostname }}"
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
   notify: Reboot after hostname change
+
 
 - name: Set hosts
   ansible.builtin.lineinfile:
