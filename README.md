@@ -1,16 +1,14 @@
 # ansible-pihole
-Bootstrap a Raspberry Pi with Ansible and install Docker + Pi-hole + [Orbital-Sync](https://github.com/mattwebbio/orbital-sync)
+Bootstrap a Raspberry Pi with Ansible and install Docker + [Pi-hole](https://github.com/pi-hole/docker-pi-hole) + [Orbital-Sync](https://github.com/mattwebbio/orbital-sync)
 
 Optionally you can enable HA (high availability) with keepalived and sync settings between multiple instances.
 
-The repository contains four Ansible Playbooks. Each one is described here shortly.
-
-For more info about the Docker Pi-hole image please check the official repository: https://github.com/pi-hole/docker-pi-hole
+The repository contains three Ansible Playbooks. Each one is described here shortly.
 
 ## Base Setup
 - An [Ansible](https://www.ansible.com/) controller machine with Ansible [installed](https://docs.ansible.com/ansible/latest/installation_guide/index.html) (version 2.10 or later)
 - The [openssh_keypair](https://docs.ansible.com/ansible/latest/collections/community/crypto/openssh_keypair_module.html) Ansible module installed
-- One or more Raspberry Pi's with [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/operating-systems/) (bullseye)
+- One or more Raspberry Pi's with [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/operating-systems/) (bookworm)
 - Headless setup (configuration before first boot):
   - Enable [SSH](https://www.raspberrypi.com/documentation/computers/remote-access.html#enabling-the-server) `"NOTE For headless setup..."`
   - Enable [wireless networking](https://www.raspberrypi.com/documentation/computers/configuration.html#configuring-networking-2) or connect with LAN  
