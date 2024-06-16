@@ -35,7 +35,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies.
-        run: pip3 install ansible
+        run: pip3 install ansible ansible-lint
 
       - name: Install test dependencies.
         run: ansible-galaxy role install -r roles/requirements.yml
