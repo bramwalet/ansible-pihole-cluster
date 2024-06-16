@@ -7,6 +7,6 @@
     - bootstrap
     - updates
     - sshd
-    - docker
+    - geerlingguy.docker
     - pihole
     - start_keepalived
