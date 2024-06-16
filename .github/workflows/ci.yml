@@ -24,22 +24,6 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the codebase.
-        uses: actions/checkout@v4
-        with: 
-          path: ansible-pihole-cluster 
-  
-      - name: Set up Python 3.
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install test dependencies.
-        run: pip3 install ansible ansible-lint
-
-      - name: Install test dependencies.
-        run: ansible-galaxy role install -r roles/requirements.yml
-
-      - name: Lint code.
-        run: |
-          ansible-lint .
+      - uses: actions/checkout@v4
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@main # or version tag instead of 'main'
