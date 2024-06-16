@@ -1,13 +1,13 @@
 - name: Create pihole directory
-  file:
+  ansible.builtin.file:
     path: "/home/{{ ansible_user }}/pihole"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     state: directory
-    mode: 0755
+    mode: "0755"
 
 - name: Get IPv6 link local address
-  set_fact:
+  ansible.builtin.set_fact:
     ipv6: "{{ item.address }}"
   loop: "{{ vars['ansible_' + ansible_default_ipv6.interface | default(ansible_default_ipv4.interface)].ipv6 }}"
   loop_control:
@@ -15,24 +15,24 @@
   when: "'link' in item.scope"
 
 - name: Determine Pi-hole host IPs (HA mode)
-  set_fact:
+  ansible.builtin.set_fact:
     pihole_local_ipv4: "{{ pihole_vip_ipv4.split('/')[0] }}"
     pihole_local_ipv6: "{{ pihole_vip_ipv6.split('/')[0] }}"
     execution_mode: "HA setup with keepalived"
   when: pihole_ha_mode
 
 - name: Determine Pi-hole host IPs (single mode)
-  set_fact:
+  ansible.builtin.set_fact:
     pihole_local_ipv4: "{{ ansible_host }}"
     pihole_local_ipv6: "{{ ipv6 }}"
     execution_mode: "single node setup"
   when: not pihole_ha_mode
 
 - name: Start/Update pihole container
-  docker_container:
+  community.docker.docker_container:
     name: pihole
     image: pihole/pihole:2024.05.0
-    pull: yes
+    pull: true
     restart_policy: unless-stopped
     env:
       TZ: "{{ timezone }}"
@@ -63,7 +63,7 @@
       - CAP_CHOWN
 
 - name: Check pihole container
-  uri:
+  ansible.builtin.uri:
     url: http://localhost/admin
   register: result
   until: result.status == 200
@@ -71,19 +71,20 @@
   delay: 10
 
 - name: Copy 42-reverse-proxied-subdomains.conf
-  copy:
+  ansible.builtin.copy:
     dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d"
     src: 42-reverse-proxied-subdomains.conf
-    mode: 0644
-    
+    mode: "0644"
+
+
 - name: Remove old image versions
-  docker_prune:
-    images: yes
+  community.docker.docker_prune:
+    images: true
     images_filters:
       dangling: false
 
 - name: INFORMATION
-  debug:
+  ansible.builtin.debug:
     msg:
       - "In the {{ execution_mode }} make sure to point your DNS server settings here:"
       - "DNSv4: {{ pihole_local_ipv4 }}"

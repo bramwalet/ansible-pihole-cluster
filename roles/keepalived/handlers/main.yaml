@@ -1,7 +1,9 @@
-- name: Reload sysctl config
-  command: sysctl -p
+# - name: Reload sysctl config
+#   ansible.posix.sysctl:
+#     name:
+#     reload: true
 
 - name: Restart keepalived service
-  service:
+  ansible.builtin.service:
     name: keepalived
     state: restarted

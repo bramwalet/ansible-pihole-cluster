@@ -1,5 +1,6 @@
+# TODO: SSH module?
 - name: Hardening
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /etc/ssh/sshd_config
     validate: /usr/sbin/sshd -T -f %s
     block: |
@@ -10,4 +11,4 @@
   notify: Restart sshd
 
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

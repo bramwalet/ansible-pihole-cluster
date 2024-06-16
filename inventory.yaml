@@ -26,3 +26,4 @@ all:
     pihole_vip_ipv4: "192.168.16.5/24"
     pihole_vip_ipv6: "fd00::10/64"
     sync_target: "{{ pihole_vip_ipv4.split('/')[0] }}"
+    keepalived_ip_nonlocal_bind: "1"

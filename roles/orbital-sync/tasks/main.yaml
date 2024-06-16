@@ -1,18 +1,19 @@
 - name: Start/Update orbital-sync container
-  docker_container:
+  community.docker.docker_container:
     name: orbital-sync
     image: mattwebbio/orbital-sync:1
-    pull: yes
+    pull: true
     restart_policy: unless-stopped
     env:
       PRIMARY_HOST_BASE_URL: "http://{{ hostvars['pihole-master'].ansible_host }}"
       PRIMARY_HOST_PASSWORD: '{{ pihole_master_webpassword }}'
       SECONDARY_HOSTS_1_BASE_URL: "http://{{ hostvars['pihole-slave'].ansible_host }}"
       SECONDARY_HOSTS_1_PASSWORD: "{{ pihole_webpassword }}"
-      INTERVAL_MINUTES: '15'    
-      
+      INTERVAL_MINUTES: '15'
+
+
 - name: Remove old image versions
-  docker_prune:
-    images: yes
+  community.docker.docker_prune:
+    images: true
     images_filters:
       dangling: false
