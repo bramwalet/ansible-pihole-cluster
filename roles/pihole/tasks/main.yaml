@@ -31,7 +31,7 @@
 - name: Start/Update pihole container
   docker_container:
     name: pihole
-    image: "{{ pihole_image }}"
+    image: pihole/pihole:2024.05.0
     pull: yes
     restart_policy: unless-stopped
     env:
@@ -70,6 +70,12 @@
   retries: 5
   delay: 10
 
+- name: Copy 42-reverse-proxied-subdomains.conf
+  copy:
+    dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d"
+    src: 42-reverse-proxied-subdomains.conf
+    mode: 0644
+    
 - name: Remove old image versions
   docker_prune:
     images: yes
