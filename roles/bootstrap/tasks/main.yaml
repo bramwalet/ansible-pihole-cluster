@@ -58,11 +58,11 @@
     line: 127.0.1.1       {{ inventory_hostname }}
   notify: Reboot after hostname change
 
-- name: Set custom DNS servers
-  blockinfile:
-    path: /etc/dhcpcd.conf
-    block: static domain_name_servers={{ static_dns }}
-  notify: Restart dhcpcd
+# - name: Set custom DNS servers
+#   blockinfile:
+#     path: /etc/dhcpcd.conf
+#     block: static domain_name_servers={{ static_dns }}
+#   notify: Restart dhcpcd
 
 - name: Flush handlers
   meta: flush_handlers
