@@ -1,11 +1,13 @@
 all:
-  hosts:
-    pihole-1:
-      ansible_host: 192.168.178.45
+  hosts: 
+    pihole-master:
+      ansible_host: 192.168.16.2
       priority: 101
-    pihole-2:
-      ansible_host: 192.168.178.46
+      slave: false
+    pihole-slave:
+      ansible_host: 192.168.16.3
       priority: 100
+      slave: true
   vars:
     ansible_user: pi
     ansible_password: raspberry # only used on first run
@@ -13,7 +15,6 @@ all:
     github_user_for_ssh_key: shaderecker
     timezone: "Europe/Berlin"
     static_dns: "1.1.1.1"
-    pihole_image: "pihole/pihole:2024.03.2"
     pihole_ftl_max_db_days: "180"
     pihole_webpassword: Intranet # example value, change it and better use ansible-vault
     pihole_dns: "1.1.1.1;2606:4700:4700::1111"

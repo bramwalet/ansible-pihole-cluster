@@ -6,4 +6,6 @@
     - stop_keepalived
     - updates
     - pihole
+    - role: orbital-sync
+      when: slave | bool
     - start_keepalived
