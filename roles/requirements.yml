@@ -1,3 +1,2 @@
 # from galaxy
 - name: geerlingguy.docker
-- name: ansible.posix
