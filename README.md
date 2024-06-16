@@ -1,5 +1,5 @@
 # ansible-pihole
-Bootstrap a Raspberry Pi with Ansible and install Docker + Pi-hole
+Bootstrap a Raspberry Pi with Ansible and install Docker + Pi-hole + [Orbital-Sync](https://github.com/mattwebbio/orbital-sync)
 
 Optionally you can enable HA (high availability) with keepalived and sync settings between multiple instances.
 
