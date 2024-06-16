@@ -14,6 +14,11 @@
     state: present
   when: keepalived_ip_nonlocal_bind | bool
 
+- name: Get IPv6 enabled state
+  ansible.builtin.slurp:
+    src: /sys/module/ipv6/parameters/disable
+  register: _ipv6_disabled
+
 - name: Set ipv6_enabled fact
   ansible.builtin.set_fact:
     is_ipv6_enabled: "{{ not _ipv6_disabled.failed and '0' in (_ipv6_disabled.content | b64decode) }}"
