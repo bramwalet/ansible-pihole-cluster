@@ -3,3 +3,6 @@ collections:
   - name: ansible.posix
   - name: community.docker
   - name: community.general
+roles: 
+  # from galaxy
+  - name: geerlingguy.docker
