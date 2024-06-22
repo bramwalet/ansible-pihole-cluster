@@ -40,4 +40,4 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: Molecule
-        uses: gofrolist/molecule-action@v2
+        uses: monolithprojects/action-molecule@latest
