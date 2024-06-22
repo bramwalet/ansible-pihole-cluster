@@ -1,0 +1,20 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  become: true
+
+  vars:
+    pihole_webpassword: secret
+    pihole_ha_mode: false
+    slave: false
+  roles:
+    - stop_keepalived
+    - bootstrap
+    - updates
+    - sshd
+    - geerlingguy.docker
+    - pihole
+    - role: orbital_sync
+      when: slave | bool
+    - start_keepalived

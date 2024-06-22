@@ -1,18 +1,26 @@
+---
 - name: Add ssh key
   ansible.posix.authorized_key:
     key: "https://github.com/{{ github_user_for_ssh_key }}.keys"
     user: "{{ ansible_user }}"
     comment: "github-{{ github_user_for_ssh_key }}"
+  tags:
+    - hardening
 
 - name: Lock password for {{ ansible_user }}
   ansible.builtin.user:
     name: "{{ ansible_user }}"
     password_lock: true
+  tags:
+    - hardening
 
 - name: Set bashrc for {{ ansible_user }}
   ansible.builtin.blockinfile:
     path: "/home/{{ ansible_user }}/.bashrc"
     block: alias ll='ls -la'
+  tags:
+    - hardening
+    - molecule-notest
 
 - name: Set bashrc for root
   ansible.builtin.blockinfile:
@@ -31,17 +39,22 @@
           . /etc/bash_completion
         fi
       fi
+  tags:
+    - hardening
 
 - name: Set timezone
   community.general.timezone:
     name: "{{ timezone }}"
-
+  tags:
+    - timezone
 
 - name: Set hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
   notify: Reboot after hostname change
-
+  tags:
+    - hostname
+    - molecule-notest
 
 - name: Set hosts
   ansible.builtin.lineinfile:
@@ -49,12 +62,22 @@
     regexp: "^127.0.1.1"
     line: 127.0.1.1       {{ inventory_hostname }}
   notify: Reboot after hostname change
+  tags:
+    - hostsfile
+    - molecule-notest
 
 # - name: Set custom DNS servers
 #   blockinfile:
 #     path: /etc/dhcpcd.conf
 #     block: static domain_name_servers={{ static_dns }}
 #   notify: Restart dhcpcd
+
+# - name: Set custom DNS server
+#   community.general.nmcli:
+#     conn_name: my-eth1
+#     dns4:
+#       - "{{ static_dns }}"
+#     state: present
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

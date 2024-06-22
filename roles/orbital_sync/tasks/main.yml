@@ -6,7 +6,7 @@
     restart_policy: unless-stopped
     env:
       PRIMARY_HOST_BASE_URL: "http://{{ hostvars['pihole-master'].ansible_host }}"
-      PRIMARY_HOST_PASSWORD: '{{ pihole_master_webpassword }}'
+      PRIMARY_HOST_PASSWORD: '{{ pihole_webpassword }}'
       SECONDARY_HOSTS_1_BASE_URL: "http://{{ hostvars['pihole-slave'].ansible_host }}"
       SECONDARY_HOSTS_1_PASSWORD: "{{ pihole_webpassword }}"
       INTERVAL_MINUTES: '15'

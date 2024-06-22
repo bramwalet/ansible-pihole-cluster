@@ -6,13 +6,31 @@
     state: directory
     mode: "0755"
 
-- name: Get IPv6 link local address
+- name: Set a variable if not defined
   ansible.builtin.set_fact:
-    ipv6: "{{ item.address }}"
-  loop: "{{ vars['ansible_' + ansible_default_ipv6.interface | default(ansible_default_ipv4.interface)].ipv6 }}"
-  loop_control:
-    label: "{{ item.address }}"
-  when: "'link' in item.scope"
+    ipv6_enabled: false
+  when: ansible_facts['ansible_default_ipv6.interface']  is not defined
+
+- name: Set a variable if not defined
+  ansible.builtin.set_fact:
+    ipv6_enabled: false
+  when: ansible_facts['ansible_default_ipv4.interface'].ipv6 is not defined
+
+- name: Only fetch IPv6 link local address when IPv6 is enabled
+  when: ipv6_enabled
+  block:
+    - name: Get IPv6 link local address
+      ansible.builtin.set_fact:
+        ipv6_link_local: "{{ item.address }}"
+      loop: "{{ vars['ansible_' + ansible_default_ipv6.interface | default(ansible_default_ipv4.interface)].ipv6 }}"
+      loop_control:
+        label: "{{ item.address }}"
+      when: "'link' in item.scope"
+
+- name: Only fetch IPv6 link local address when IPv6 is enabled
+  ansible.builtin.set_fact:
+    ipv6_link_local: "N/A"
+  when: not ipv6_enabled
 
 - name: Determine Pi-hole host IPs (HA mode)
   ansible.builtin.set_fact:
@@ -24,7 +42,7 @@
 - name: Determine Pi-hole host IPs (single mode)
   ansible.builtin.set_fact:
     pihole_local_ipv4: "{{ ansible_host }}"
-    pihole_local_ipv6: "{{ ipv6 }}"
+    pihole_local_ipv6: "{{ ipv6_link_local }}"
     execution_mode: "single node setup"
   when: not pihole_ha_mode
 
