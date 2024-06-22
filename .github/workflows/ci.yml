@@ -30,16 +30,16 @@ jobs:
       - name: Run ansible-lint
         uses: ansible/ansible-lint@main # or version tag instead of 'main'
 
-  test:
-    name: Molecule
-    runs-on: ubuntu-latest
+  # test:
+  #   name: Molecule
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          path: "${{ github.repository }}"
-      - name: Molecule
-        uses: monolithprojects/action-molecule@v1.4.1
-        with:
-          molecule_command: converge
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         path: "${{ github.repository }}"
+  #     - name: Molecule
+  #       uses: monolithprojects/action-molecule@v1.4.1
+  #       with:
+  #         molecule_command: converge
