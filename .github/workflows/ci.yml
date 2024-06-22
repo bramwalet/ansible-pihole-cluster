@@ -39,5 +39,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: "${{ github.repository }}"
+      - name: Install test dependencies
+        run: pip install dnspython
       - name: Molecule
         uses: gofrolist/molecule-action@v2
