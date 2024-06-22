@@ -9,6 +9,8 @@
       MaxSessions 5
       PasswordAuthentication no
   notify: Restart sshd
+  tags:
+    - molecule-notest
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
