@@ -40,8 +40,4 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: Molecule
-<<<<<<<<< Temporary merge branch 1
-      - uses: gofrolist/molecule-action@v2
-=========
         uses: gofrolist/molecule-action@v2
->>>>>>>>> Temporary merge branch 2
