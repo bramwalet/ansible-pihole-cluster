@@ -8,9 +8,9 @@ dependency:
 
 driver:
   name: docker
-  
-lint: | 
-  set -e 
+
+lint: |
+  set -e
   yamllint .
   ansible-lint
 platforms:
@@ -45,6 +45,6 @@ provisioner:
     host_vars:
       instance-1:
         slave: false
-    
+
 verifier:
   name: ansible
