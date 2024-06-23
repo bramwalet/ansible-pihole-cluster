@@ -1,3 +1,5 @@
+[![CI](https://github.com/bramwalet/ansible-pihole-cluster/actions/workflows/ci.yml/badge.svg)](https://github.com/bramwalet/ansible-pihole-cluster/actions/workflows/ci.yml)
+
 # ansible-pihole
 Bootstrap a Raspberry Pi with Ansible and install Docker + [Pi-hole](https://github.com/pi-hole/docker-pi-hole) + [Orbital-Sync](https://github.com/mattwebbio/orbital-sync)
 
