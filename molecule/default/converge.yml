@@ -4,17 +4,10 @@
   gather_facts: true
   become: true
 
+
+- name: Import bootstrap pihole playbook
+  ansible.builtin.import_playbook: ../../bootstrap-pihole.yml
   vars:
     pihole_webpassword: secret
     pihole_ha_mode: false
     slave: false
-  roles:
-    - stop_keepalived
-    - bootstrap
-    - updates
-    - sshd
-    - geerlingguy.docker
-    - pihole
-    - role: orbital_sync
-      when: slave | bool
-    - start_keepalived

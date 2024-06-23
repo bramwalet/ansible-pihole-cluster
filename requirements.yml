@@ -1,9 +1,14 @@
 ---
 collections:
   - name: ansible.posix
+    version: 1.5.4
   - name: community.docker
+    version: 3.10.4
   - name: community.general
+    version: 9.1.0
   - name: ansible.utils
+    version: 4.1.0
 roles:
   # from galaxy
   - name: geerlingguy.docker
+    version: 7.2.0

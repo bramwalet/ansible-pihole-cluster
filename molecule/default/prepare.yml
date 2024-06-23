@@ -10,7 +10,7 @@
     - name: Add pi user
       ansible.builtin.user:
         name: pi
-        password: raspberry
+        password: $6$hbn7y6.vHWCMpFRi$05Q9n4qLpGr0O1Vq4JdjVmpvfTucVBrMM7ZuicyK3srEoP/VhIrZihw11qyI24/nYTrmxEq0VCaiCVWOHWkRE.
         state: present
         shell: /bin/bash
         createhome: true
