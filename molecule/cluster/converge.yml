@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  become: true
+
+
+- name: Import bootstrap pihole playbook
+  ansible.builtin.import_playbook: ../../bootstrap-pihole.yml
+  vars:
+    pihole_webpassword: secret
+    pihole_ha_mode: true

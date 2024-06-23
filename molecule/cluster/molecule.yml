@@ -1,0 +1,88 @@
+---
+dependency:
+  enabled: true
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+    role-file: requirements.yml
+
+driver:
+  name: docker
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+platforms:
+  - name: pihole-master
+    image: geerlingguy/docker-debian12-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - /var/lib/containerd
+    published_ports:
+      - 127.0.0.1:8081:80
+      - 127.0.0.1:53:53
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    groups:
+      - dnsservers
+
+  - name: pihole-slave
+    image: geerlingguy/docker-debian12-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - /var/lib/containerd
+    published_ports:
+      - 127.0.0.1:8082:80
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    groups:
+      - dnsservers
+
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_ROLES_PATH: "../../roles/"
+    ANSIBLE_VERBOSITY: 0
+  lint:
+    name: ansible-lint
+  inventory:
+    # links:
+    #   group_vars: ../../group_vars
+    #   hosts: hosts.yml
+    group_vars:
+      dnsservers:
+        github_user_for_ssh_key: bramwalet
+        timezone: "Europe/Amsterdam"
+        static_dns: "1.1.1.1"
+        pihole_ftl_max_db_days: "180"
+        pihole_dns: "1.1.1.1;2606:4700:4700::1111"
+        pihole_rev_server: "true"
+        pihole_rev_server_domain: "lan.bramwalet.nl"
+        pihole_rev_server_target: "192.168.16.1"
+        pihole_rev_server_cidr: "192.168.16.0/24"
+        pihole_ha_mode: true
+        pihole_vip_ipv4: "192.168.16.5/24"
+        pihole_vip_ipv6: "fd00::10/64"
+        sync_target: "{{ pihole_vip_ipv4.split('/')[0] }}"
+        keepalived_ip_nonlocal_bind: "1"
+    host_vars:
+      pihole-master:
+        master: true
+        priority: 101
+      pihole-slave:
+        master: false
+        priority: 100        
+
+verifier:
+  name: ansible

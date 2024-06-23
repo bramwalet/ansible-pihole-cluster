@@ -44,7 +44,7 @@ provisioner:
       group_vars: ../../group_vars
     host_vars:
       instance-1:
-        slave: false
+        master: true
 
 verifier:
   name: ansible

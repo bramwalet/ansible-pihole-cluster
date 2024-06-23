@@ -3,8 +3,8 @@ dnsservers:
     pihole-master:
       ansible_host: 192.168.16.2
       priority: 101
-      slave: false
+      master: true
     pihole-slave:
       ansible_host: 192.168.16.3
       priority: 100
-      slave: true
+      master: false

@@ -2,10 +2,34 @@
   hosts: all
   become: true
   serial: 1
+
+  pre_tasks:
+    - name: Ensure keepalived service is stopped
+      ansible.builtin.service:
+        name: keepalived
+        state: stopped
+      register: result
+      failed_when:
+        - result.failed == true
+        - '"Could not find the requested service" not in result.msg'
   roles:
-    - stop_keepalived
+    # - stop_keepalived
     - updates
     - pihole
     - role: orbital_sync
       when: slave | bool
-    - start_keepalived
+    # - start_keepalived
+
+  post_tasks:
+    - name: Ensure keepalived service is started
+      ansible.builtin.service:
+        name: keepalived
+        state: started
+      register: result
+      failed_when:
+        - result.failed == true
+        - '"Could not find the requested service" not in result.msg'
+
+# import playbook
+# set tag "update"
+# let this be serial 1

@@ -6,53 +6,67 @@
 #       net.ipv6.ip_nonlocal_bind = 1
 #   notify: Reload sysctl config
 
-- name: Enable binding non-local IPv4
-  ansible.posix.sysctl:
-    name: net.ipv4.ip_nonlocal_bind
-    value: "{{ keepalived_ip_nonlocal_bind | string }}"
-    reload: true
-    state: present
-  when: keepalived_ip_nonlocal_bind | bool
+- name: HA mode
+  when: pihole_ha_mode | bool
+  block:
+    - name: Enable binding non-local IPv4
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_nonlocal_bind
+        value: "{{ keepalived_ip_nonlocal_bind | string }}"
+        reload: true
+        state: present
+      when: keepalived_ip_nonlocal_bind | bool
 
-- name: Get IPv6 enabled state
-  ansible.builtin.slurp:
-    src: /sys/module/ipv6/parameters/disable
-  register: _ipv6_disabled
+    - name: Get IPv6 enabled state
+      ansible.builtin.slurp:
+        src: /sys/module/ipv6/parameters/disable
+      register: _ipv6_disabled
 
-- name: Set ipv6_enabled fact
-  ansible.builtin.set_fact:
-    is_ipv6_enabled: "{{ not _ipv6_disabled.failed and '0' in (_ipv6_disabled.content | b64decode) }}"
+    - name: Set ipv6_enabled fact
+      ansible.builtin.set_fact:
+        is_ipv6_enabled: "{{ not _ipv6_disabled.failed and '0' in (_ipv6_disabled.content | b64decode) }}"
 
-- name: Allow binding non-local IPv6
-  ansible.posix.sysctl:
-    name: net.ipv6.ip_nonlocal_bind
-    value: "{{ keepalived_ip_nonlocal_bind | string }}"
-    reload: true
-    state: present
-  when:
-    - keepalived_ip_nonlocal_bind | bool
-    - is_ipv6_enabled
+    - name: Allow binding non-local IPv6
+      ansible.posix.sysctl:
+        name: net.ipv6.ip_nonlocal_bind
+        value: "{{ keepalived_ip_nonlocal_bind | string }}"
+        reload: true
+        state: present
+      when:
+        - keepalived_ip_nonlocal_bind | bool
+        - is_ipv6_enabled
 
-- name: Flush handlers
-  ansible.builtin.meta: flush_handlers
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
 
-- name: Install keepalived
-  ansible.builtin.apt:
-    force_apt_get: true
-    name: keepalived
+    - name: Install keepalived
+      ansible.builtin.apt:
+        force_apt_get: true
+        name: keepalived
+        state: present
 
-- name: Copy check_pihole.sh
-  ansible.builtin.copy:
-    dest: /etc/keepalived/check_pihole.sh
-    src: check_pihole.sh
-    mode: "0755"
+    - name: Copy check_pihole.sh
+      ansible.builtin.copy:
+        dest: /etc/keepalived/check_pihole.sh
+        src: check_pihole.sh
+        mode: "0755"
+        force: false
 
-- name: Configure keepalived
-  ansible.builtin.template:
-    dest: /etc/keepalived/keepalived.conf
-    src: keepalived.j2
-    mode: "0644"
-  notify: Restart keepalived service
+    - name: Configure keepalived
+      ansible.builtin.template:
+        dest: /etc/keepalived/keepalived.conf
+        src: keepalived.j2
+        mode: "0644"
+      notify: Restart keepalived service
 
-- name: Flush handlers
-  ansible.builtin.meta: flush_handlers
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
+
+- name: Single mode
+  when: not pihole_ha_mode | bool
+  block:
+    - name: Make sure keepalived is absent
+      ansible.builtin.apt:
+        force_apt_get: true
+        name: keepalived
+        state: absent

@@ -1,0 +1,39 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: true
+  become: true
+  vars:
+    ansible_user: root
+
+
+  tasks:
+    # these tasks are needed to mimic a Raspberry Pi setup
+    - name: Add pi user
+      ansible.builtin.user:
+        name: pi
+        password: $6$hbn7y6.vHWCMpFRi$05Q9n4qLpGr0O1Vq4JdjVmpvfTucVBrMM7ZuicyK3srEoP/VhIrZihw11qyI24/nYTrmxEq0VCaiCVWOHWkRE.
+        state: present
+        shell: /bin/bash
+        createhome: true
+        home: /home/pi
+
+    - name: Grant pi user sudo permissions
+      community.general.sudoers:
+        name: 010_pi-nopasswd
+        state: present
+        user: pi
+        runas: root
+        commands: ALL
+        nopassword: true
+
+    # these dependencies are required for testing purposes.
+    - name: Install request dependency
+      ansible.builtin.pip:
+        name: requests
+        state: present
+
+    - name: Install dnspython dependency
+      ansible.builtin.pip:
+        name: dnspython
+        state: present

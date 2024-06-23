@@ -98,6 +98,7 @@
     dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/"
     src: 42-reverse-proxied-subdomains.conf
     mode: "0644"
+    force: false
 
 - name: Remove old image versions
   community.docker.docker_prune:

@@ -1,16 +1,36 @@
 - name: Initialize pi
   hosts: all
   become: true
-  serial: 1
+  strategy: linear
+  # serial: 1
+
+  pre_tasks:
+    - name: Ensure keepalived service is stopped
+      ansible.builtin.service:
+        name: keepalived
+        state: stopped
+      register: result
+      failed_when:
+        - result.failed == true
+        - '"Could not find the requested service" not in result.msg'
+
   roles:
-    - stop_keepalived
-    - bootstrap
-    - updates
-    - sshd
-    - geerlingguy.docker
-    - pihole
+    # - stop_keepalived
+    - role: bootstrap
+    - role: updates
+    - role: sshd
+    - role: geerlingguy.docker
+    - role: pihole
     - role: keepalived
-      when: pihole_ha_mode | bool
     - role: orbital_sync
-      when: slave | bool
-    - start_keepalived
+      # - start_keepalived
+
+  post_tasks:
+    - name: Ensure keepalived service is started
+      ansible.builtin.service:
+        name: keepalived
+        state: started
+      register: result
+      failed_when:
+        - result.failed == true
+        - '"Could not find the requested service" not in result.msg'
