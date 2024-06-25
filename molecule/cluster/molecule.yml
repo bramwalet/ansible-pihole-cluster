@@ -82,7 +82,7 @@ provisioner:
         priority: 101
       pihole-slave:
         master: false
-        priority: 100        
+        priority: 100
 
 verifier:
   name: ansible
