@@ -3,6 +3,59 @@
   hosts: all
 
   tasks:
+    - name: Obtain info about Pi-Hole container
+      community.docker.docker_container_info:
+        name: pihole
+      register: pihole_container_result
+
+    - name: Debug container result
+      ansible.builtin.debug:
+        msg: "{{ pihole_container_result.container }}"
+      tags: [never, debug]
+
+    - name: Verify that Pi-Hole container exists
+      ansible.builtin.assert:
+        that: pihole_container_result
+        fail_msg: Pi-Hole container is NOT running, but expected.
+
+    - name: Verify that Pi-Hole container is running
+      when: pihole_container_result.exists
+      ansible.builtin.assert:
+        that: pihole_container_result.container['State']['Status'] == "running"
+        fail_msg: Pi-Hole container is NOT running, but expected.
+
+    - name: Obtain info about Orbital Sync container
+      community.docker.docker_container_info:
+        name: orbital-sync
+      register: orbital_sync_container_result
+
+    - name: Verify for master
+      when: master | bool
+      block:
+        - name: Verify that Orbital Sync container exists
+          ansible.builtin.assert:
+            that: orbital_sync_container_result.exists
+            fail_msg: Orbital Sync container NOT running, but expected.
+
+        - name: Debug container result
+          ansible.builtin.debug:
+            msg: "{{ orbital_sync_container_result.container }}"
+          tags: [never, debug]
+
+        - name: Verify that Orbital Sync container is running
+          when: orbital_sync_container_result.exists
+          ansible.builtin.assert:
+            that: orbital_sync_container_result.container['State']['Status'] == "running"
+            fail_msg: Orbital Sync container NOT running, but expected.
+
+    - name: Verify for slave
+      when: not master | bool
+      block:
+        - name: Verify that Orbital Sync container does NOT exist
+          ansible.builtin.assert:
+            that: not orbital_sync_container_result.exists
+            fail_msg: Orbital Sync container is present, but NOT expected.
+
     - name: Check PiHole services and connectivities
       loop:
         - 80

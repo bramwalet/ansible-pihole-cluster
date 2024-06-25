@@ -5,6 +5,7 @@
   # serial: 1
 
   pre_tasks:
+  # add check if keepalived should be restarted.
     - name: Ensure keepalived service is stopped
       ansible.builtin.service:
         name: keepalived
@@ -26,6 +27,7 @@
       # - start_keepalived
 
   post_tasks:
+  # add check if keepalived should be restarted.
     - name: Ensure keepalived service is started
       ansible.builtin.service:
         name: keepalived

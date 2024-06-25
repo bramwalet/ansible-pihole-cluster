@@ -1,18 +1,18 @@
 ---
 - name: HA mode
-  when: pihole_ha_mode | bool and master | bool
+  when: pihole_ha_mode and master | bool
   block:
     - name: Start/Update orbital-sync container
       community.docker.docker_container:
         name: orbital-sync
-        image: mattwebbio/orbital-sync:1
+        image: mattwebbio/orbital-sync:1.8.1
         pull: true
         restart_policy: unless-stopped
-        state: present
+        state: started
         env:
-          PRIMARY_HOST_BASE_URL: "http://{{ hostvars['pihole-master'].ansible_host }}"
+          PRIMARY_HOST_BASE_URL: "http://{{ hostvars['pihole-master'].inventory_hostname }}"
           PRIMARY_HOST_PASSWORD: '{{ pihole_webpassword }}'
-          SECONDARY_HOSTS_1_BASE_URL: "http://{{ hostvars['pihole-slave'].ansible_host }}"
+          SECONDARY_HOSTS_1_BASE_URL: "http://{{ hostvars['pihole-slave'].inventory_hostname }}"
           SECONDARY_HOSTS_1_PASSWORD: "{{ pihole_webpassword }}"
           INTERVAL_MINUTES: '15'
 
@@ -29,3 +29,4 @@
       community.docker.docker_container:
         name: orbital-sync
         state: absent
+
