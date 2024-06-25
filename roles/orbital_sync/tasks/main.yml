@@ -29,4 +29,3 @@
       community.docker.docker_container:
         name: orbital-sync
         state: absent
-

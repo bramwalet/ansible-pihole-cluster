@@ -3,6 +3,27 @@
   hosts: all
 
   tasks:
+    - name: Obtain info about Pi-Hole container
+      community.docker.docker_container_info:
+        name: pihole
+      register: pihole_container_result
+
+    - name: Debug container result
+      ansible.builtin.debug:
+        msg: "{{ pihole_container_result.container }}"
+      tags: [never, debug]
+
+    - name: Verify that Pi-Hole container exists
+      ansible.builtin.assert:
+        that: pihole_container_result
+        fail_msg: Pi-Hole container is NOT running, but expected.
+
+    - name: Verify that Pi-Hole container is running
+      when: pihole_container_result.exists
+      ansible.builtin.assert:
+        that: pihole_container_result.container['State']['Status'] == "running"
+        fail_msg: Pi-Hole container is NOT running, but expected.
+
     - name: Check PiHole services and connectivities
       loop:
         - 80
