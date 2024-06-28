@@ -1,1 +1,6 @@
-dnspython
+requests==2.31.0
+dnspython==2.6.1
+molecule
+molecule-plugins[docker]
+yamllint
+ansible-lint
