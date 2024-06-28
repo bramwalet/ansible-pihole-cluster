@@ -25,12 +25,13 @@
         commands: ALL
         nopassword: true
 
-    # these dependencies are required for testing purposes.
     - name: Install request dependency
       ansible.builtin.pip:
         name: requests
+        version: 2.31.0
         state: present
 
+    # these dependencies are required for testing purposes.
     - name: Install dnspython dependency
       ansible.builtin.pip:
         name: dnspython
