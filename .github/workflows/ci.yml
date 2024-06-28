@@ -51,7 +51,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install molecule molecule-plugins[docker] yamllint ansible-lint dnspython
-      - name: Test Ansible Bootstrap
+      - name: Test Ansible Molecule
         run: |
           molecule test --all
         env:
