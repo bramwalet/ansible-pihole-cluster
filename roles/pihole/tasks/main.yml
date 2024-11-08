@@ -50,7 +50,9 @@
   community.docker.docker_container:
     name: pihole
     image: pihole/pihole:2024.07.0
+    state: started
     pull: true
+    image_name_mismatch: recreate
     restart_policy: unless-stopped
     env:
       TZ: "{{ timezone }}"
